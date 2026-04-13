@@ -5,9 +5,15 @@ __pycache__/
 
 # Node
 frontend/node_modules/
+node_modules/
+public/
+frontend/dist/
 
 # Expo
 frontend/.expo/
+
+# Vercel
+.vercel/
 
 # macOS
 .DS_Store
