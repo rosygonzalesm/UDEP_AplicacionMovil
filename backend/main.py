@@ -47,6 +47,21 @@ def classify_level(probability: int) -> str:
     return 'ROJO'
 
 
+@app.get('/')
+def root() -> dict:
+    return {
+        'title': 'PIURA Health Prototype API',
+        'version': '0.1.0',
+        'description': 'API para detección de riesgo de anemia mediante análisis de imágenes del ojo',
+        'endpoints': {
+            'health': '/health',
+            'docs': '/docs',
+            'predict': '/predict (POST)',
+        },
+        'repository': 'https://github.com/rosygonzalesm/UDEP_AplicacionMovil',
+    }
+
+
 @app.get('/health')
 def health() -> dict:
     return {'status': 'ok'}
