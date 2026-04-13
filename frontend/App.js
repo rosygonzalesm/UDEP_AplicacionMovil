@@ -14,9 +14,8 @@ import {
 import { CameraView, useCameraPermissions } from 'expo-camera';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 
-// IMPORTANTE: Reemplaza 'TU-BACKEND-URL' con tu URL de Render.com
-// Ej: 'https://piura-health-api.onrender.com'
-const PRODUCTION_API_URL = 'https://TU-BACKEND-URL.onrender.com';
+// IMPORTANTE: URL de producción en Render.com
+const PRODUCTION_API_URL = 'https://udep-aplicacionmovil.onrender.com';
 
 const API_BASE_URL_CANDIDATES = [
   PRODUCTION_API_URL, // Producción (Render.com)
