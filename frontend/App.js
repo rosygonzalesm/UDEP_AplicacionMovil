@@ -14,10 +14,15 @@ import {
 import { CameraView, useCameraPermissions } from 'expo-camera';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 
+// IMPORTANTE: Reemplaza 'TU-BACKEND-URL' con tu URL de Render.com
+// Ej: 'https://piura-health-api.onrender.com'
+const PRODUCTION_API_URL = 'https://TU-BACKEND-URL.onrender.com';
+
 const API_BASE_URL_CANDIDATES = [
-  'http://10.0.2.2:8000',
-  'http://localhost:8000',
-  'http://172.20.28.132:8000',
+  PRODUCTION_API_URL, // Producción (Render.com)
+  'http://10.0.2.2:8000', // Local Android emulator
+  'http://localhost:8000', // Local dev
+  'http://172.20.28.132:8000', // Local LAN fallback
 ];
 
 const SEX_OPTIONS = [
