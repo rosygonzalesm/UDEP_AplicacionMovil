@@ -25,18 +25,26 @@ const API_BASE_URL_CANDIDATES = [
 ];
 
 const SEX_OPTIONS = [
-  { label: 'Femenino', icon: 'gender-female' },
-  { label: 'Masculino', icon: 'gender-male' },
-  { label: 'Otro', icon: 'gender-transgender' },
+  { label: 'Femenino', icon: 'human-female' },
+  { label: 'Masculino', icon: 'human-male' },
+  { label: 'Otro', icon: 'account-question' },
 ];
 
 const ORIGIN_OPTIONS = [
-  { label: 'Piura', icon: 'map-marker-radius-outline' },
-  { label: 'Castilla', icon: 'home-city-outline' },
-  { label: 'Sullana', icon: 'compass-outline' },
-  { label: 'Catacaos', icon: 'map-search-outline' },
+  { label: 'Piura', icon: 'map-marker' },
+  { label: 'Castilla', icon: 'city' },
+  { label: 'Sullana', icon: 'map-marker-path' },
+  { label: 'Catacaos', icon: 'map-search' },
   { label: 'Otra', icon: 'form-textbox' },
 ];
+
+const clampAge = (value) => {
+  const parsed = Number(value);
+  if (Number.isNaN(parsed)) {
+    return 1;
+  }
+  return Math.max(1, Math.min(120, parsed));
+};
 
 const LEVEL_META = {
   VERDE: { color: '#2e7d32', text: 'Riesgo bajo', icon: 'check-circle' },
@@ -73,7 +81,7 @@ function TileOption({ icon, label, selected, onPress }) {
   return (
     <Pressable style={[styles.tile, selected && styles.tileSelected]} onPress={onPress}>
       <View style={[styles.iconBadge, selected && styles.iconBadgeSelected]}>
-        <MaterialCommunityIcons name={icon} size={16} color={selected ? '#ffffff' : '#334155'} />
+        <MaterialCommunityIcons name={icon} size={20} color={selected ? '#ffffff' : '#334155'} />
       </View>
       <Text style={[styles.tileText, selected && styles.tileTextSelected]}>{label}</Text>
     </Pressable>
@@ -151,6 +159,19 @@ export default function App() {
     setStep((prev) => Math.max(1, prev - 1));
   };
 
+  const updateAge = (nextAge) => {
+    setEdad(clampAge(nextAge));
+  };
+
+  const handleAgeInput = (value) => {
+    const onlyDigits = value.replace(/[^0-9]/g, '');
+    if (onlyDigits === '') {
+      setEdad(1);
+      return;
+    }
+    updateAge(onlyDigits);
+  };
+
   const captureAndAnalyze = async () => {
     if (!cameraRef.current) {
       return;
@@ -224,18 +245,37 @@ export default function App() {
               {step === 2 && (
                 <View style={styles.card}>
                   <Text style={styles.stepTitle}>2. Edad</Text>
-                  <Text style={styles.helperText}>Usa + y -</Text>
+                  <Text style={styles.helperText}>Escribe la edad o usa ajuste rapido</Text>
+                  <View style={styles.ageInputWrap}>
+                    <TextInput
+                      style={styles.ageInput}
+                      value={String(edad)}
+                      onChangeText={handleAgeInput}
+                      keyboardType="number-pad"
+                      maxLength={3}
+                      placeholder="Edad"
+                      placeholderTextColor="#64748b"
+                    />
+                    <Text style={styles.ageSuffix}>anios</Text>
+                  </View>
                   <View style={styles.ageRow}>
-                    <Pressable style={styles.ageButton} onPress={() => setEdad((prev) => Math.max(1, prev - 1))}>
+                    <Pressable style={styles.ageButton} onPress={() => updateAge(edad - 1)}>
                       <MaterialCommunityIcons name="minus" size={20} color="#ffffff" />
                     </Pressable>
                     <View style={styles.ageCenter}>
                       <Text style={styles.ageValue}>{edad}</Text>
-                      <Text style={styles.ageLabel}>anios</Text>
+                      <Text style={styles.ageLabel}>edad actual</Text>
                     </View>
-                    <Pressable style={styles.ageButton} onPress={() => setEdad((prev) => Math.min(120, prev + 1))}>
+                    <Pressable style={styles.ageButton} onPress={() => updateAge(edad + 1)}>
                       <MaterialCommunityIcons name="plus" size={20} color="#ffffff" />
                     </Pressable>
+                  </View>
+                  <View style={styles.ageQuickRow}>
+                    {[-10, -5, 5, 10].map((delta) => (
+                      <Pressable key={delta} style={styles.quickAgeButton} onPress={() => updateAge(edad + delta)}>
+                        <Text style={styles.quickAgeText}>{delta > 0 ? `+${delta}` : `${delta}`}</Text>
+                      </Pressable>
+                    ))}
                   </View>
                 </View>
               )}
@@ -446,9 +486,9 @@ const styles = StyleSheet.create({
     borderColor: '#0f172a',
   },
   iconBadge: {
-    width: 28,
-    height: 28,
-    borderRadius: 14,
+    width: 36,
+    height: 36,
+    borderRadius: 18,
     alignItems: 'center',
     justifyContent: 'center',
     backgroundColor: '#eaf0f7',
@@ -470,7 +510,29 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    marginTop: 4,
+    marginTop: 8,
+  },
+  ageInputWrap: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+  },
+  ageInput: {
+    flex: 1,
+    borderWidth: 1,
+    borderColor: '#cbd5e1',
+    borderRadius: 12,
+    paddingVertical: 10,
+    paddingHorizontal: 12,
+    color: '#0f172a',
+    fontSize: 20,
+    fontFamily: 'Georgia',
+    backgroundColor: '#ffffff',
+  },
+  ageSuffix: {
+    fontSize: 14,
+    color: '#475569',
+    fontFamily: 'Georgia',
   },
   ageButton: {
     width: 60,
@@ -492,6 +554,26 @@ const styles = StyleSheet.create({
   ageLabel: {
     fontSize: 14,
     color: '#475569',
+    fontFamily: 'Georgia',
+  },
+  ageQuickRow: {
+    marginTop: 10,
+    flexDirection: 'row',
+    gap: 8,
+    flexWrap: 'wrap',
+  },
+  quickAgeButton: {
+    borderWidth: 1,
+    borderColor: '#cbd5e1',
+    backgroundColor: '#f8fafc',
+    borderRadius: 10,
+    paddingVertical: 8,
+    paddingHorizontal: 12,
+  },
+  quickAgeText: {
+    color: '#0f172a',
+    fontWeight: '700',
+    fontSize: 14,
     fontFamily: 'Georgia',
   },
   input: {
