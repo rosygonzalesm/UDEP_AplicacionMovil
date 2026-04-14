@@ -52,6 +52,32 @@ const LEVEL_META = {
   ROJO: { color: '#b42318', text: 'Riesgo alto', icon: 'alert-octagon' },
 };
 
+const WEB_ICON_EMOJI = {
+  'human-female': '👩',
+  'human-male': '👨',
+  'account-question': '❓',
+  'map-marker': '📍',
+  city: '🏙️',
+  'map-marker-path': '🧭',
+  'map-search': '🗺️',
+  'form-textbox': '✍️',
+  minus: '➖',
+  plus: '➕',
+  'camera-outline': '📷',
+  'chevron-right': '➡️',
+  restart: '🔄',
+  'check-circle': '✅',
+  'alert-circle': '⚠️',
+  'alert-octagon': '🛑',
+};
+
+function AppIcon({ name, size = 18, color = '#334155' }) {
+  if (Platform.OS === 'web') {
+    return <Text style={{ fontSize: size, lineHeight: size + 2 }}>{WEB_ICON_EMOJI[name] || '•'}</Text>;
+  }
+  return <MaterialCommunityIcons name={name} size={size} color={color} />;
+}
+
 async function predictWithFallback(formData) {
   let lastError = null;
 
@@ -81,7 +107,7 @@ function TileOption({ icon, label, selected, onPress }) {
   return (
     <Pressable style={[styles.tile, selected && styles.tileSelected]} onPress={onPress}>
       <View style={[styles.iconBadge, selected && styles.iconBadgeSelected]}>
-        <MaterialCommunityIcons name={icon} size={20} color={selected ? '#ffffff' : '#334155'} />
+        <AppIcon name={icon} size={20} color={selected ? '#ffffff' : '#334155'} />
       </View>
       <Text style={[styles.tileText, selected && styles.tileTextSelected]}>{label}</Text>
     </Pressable>
@@ -260,14 +286,14 @@ export default function App() {
                   </View>
                   <View style={styles.ageRow}>
                     <Pressable style={styles.ageButton} onPress={() => updateAge(edad - 1)}>
-                      <MaterialCommunityIcons name="minus" size={20} color="#ffffff" />
+                      <AppIcon name="minus" size={18} color="#ffffff" />
                     </Pressable>
                     <View style={styles.ageCenter}>
                       <Text style={styles.ageValue}>{edad}</Text>
                       <Text style={styles.ageLabel}>edad actual</Text>
                     </View>
                     <Pressable style={styles.ageButton} onPress={() => updateAge(edad + 1)}>
-                      <MaterialCommunityIcons name="plus" size={20} color="#ffffff" />
+                      <AppIcon name="plus" size={18} color="#ffffff" />
                     </Pressable>
                   </View>
                   <View style={styles.ageQuickRow}>
@@ -321,7 +347,7 @@ export default function App() {
                     <View style={styles.focusCircle} />
                   </View>
                   <Pressable style={styles.primary} onPress={captureAndAnalyze}>
-                    <MaterialCommunityIcons name="camera-outline" size={15} color="#ffffff" />
+                    <AppIcon name="camera-outline" size={16} color="#ffffff" />
                     <Text style={styles.primaryText}>Tomar foto y analizar</Text>
                   </Pressable>
                 </View>
@@ -339,7 +365,7 @@ export default function App() {
                 </Pressable>
                 {step < 4 && (
                   <Pressable style={styles.primary} onPress={nextStep}>
-                    <MaterialCommunityIcons name="chevron-right" size={16} color="#ffffff" />
+                    <AppIcon name="chevron-right" size={16} color="#ffffff" />
                     <Text style={styles.primaryText}>Siguiente</Text>
                   </Pressable>
                 )}
@@ -351,7 +377,7 @@ export default function App() {
             <View style={styles.content}>
               <View style={styles.card}>
                 <View style={styles.resultHeader}>
-                  <MaterialCommunityIcons name={levelUi.icon} size={22} color={levelUi.color} />
+                  <AppIcon name={levelUi.icon} size={22} color={levelUi.color} />
                   <Text style={[styles.resultTitle, { color: levelUi.color }]}>{levelUi.text}</Text>
                 </View>
                 <View style={styles.metrics}>
@@ -362,7 +388,7 @@ export default function App() {
                 {!!result.lighting_warning && <Text style={styles.warning}>{result.lighting_warning}</Text>}
                 <Text style={styles.note}>{result.note}</Text>
                 <Pressable style={styles.primary} onPress={resetFlow}>
-                  <MaterialCommunityIcons name="restart" size={15} color="#ffffff" />
+                  <AppIcon name="restart" size={16} color="#ffffff" />
                   <Text style={styles.primaryText}>Nuevo chequeo</Text>
                 </Pressable>
               </View>
